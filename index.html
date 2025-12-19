@@ -16,64 +16,55 @@
         }
 
         body { 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 300; 
+            font-family: 'Montserrat', sans-serif; font-weight: 300; 
             margin: 0; padding: 20px; background: var(--bg); color: var(--text-main); line-height: 1.5; 
         }
 
         header { padding: 40px 0; text-align: center; }
-        header h1 { margin: 0; font-size: 42px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
+        header h1 { margin: 0; font-size: 42px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
         header h1 span { color: var(--accent); }
 
         .container { max-width: 1000px; margin: 0 auto; }
 
         .controls { 
-            background: white; padding: 25px; 
-            border-radius: 20px; box-shadow: var(--card-shadow); margin-bottom: 40px;
+            background: white; padding: 25px; border-radius: 20px; 
+            box-shadow: var(--card-shadow); margin-bottom: 40px;
         }
         .filter-group { margin-bottom: 25px; }
         .filter-group h4 { margin: 0 0 12px 0; font-size: 11px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; }
         .chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip { 
             padding: 10px 18px; border: 1px solid #e0e0e0; background: white; border-radius: 12px; 
-            cursor: pointer; font-size: 13px; font-family: 'Montserrat'; font-weight: 400; transition: 0.2s; 
+            cursor: pointer; font-size: 13px; transition: 0.2s; 
         }
         .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
 
         .bottom-actions { display: flex; gap: 12px; margin-top: 20px; border-top: 1px solid #f5f5f5; padding-top: 20px; }
-        select.sort-select { flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 12px; font-family: 'Montserrat'; font-weight: 300; outline: none; }
+        select.sort-select { flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 12px; font-family: 'Montserrat'; outline: none; }
         .reset-btn { padding: 12px 20px; border: none; background: #fff1f0; border-radius: 12px; cursor: pointer; color: #f5222d; font-weight: 700; font-size: 11px; }
 
         #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .card { 
             background: white; border-radius: 24px; padding: 20px; 
-            box-shadow: var(--card-shadow); transition: 0.3s; 
-            display: flex; flex-direction: column; cursor: pointer;
+            box-shadow: var(--card-shadow); transition: 0.3s; display: flex; flex-direction: column; cursor: pointer;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
         .card h3 { margin: 0 0 10px; font-size: 18px; font-weight: 700; height: 44px; overflow: hidden; }
         .card-size { color: var(--text-gray); font-size: 13px; margin-bottom: 4px; }
-        .price { font-size: 26px; font-weight: 900; margin: 15px 0; letter-spacing: -1px; }
+        .price { font-size: 26px; font-weight: 900; margin: 15px 0; }
 
         .actions-stack { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
-        .btn { 
-            padding: 14px; border-radius: 14px; text-decoration: none; 
-            text-align: center; font-size: 12px; font-weight: 700; transition: 0.2s; 
-        }
+        .btn { padding: 14px; border-radius: 14px; text-decoration: none; text-align: center; font-size: 12px; font-weight: 700; transition: 0.2s; }
         .btn-wa { background: #25d366; color: white; }
         .btn-kaspi { background: var(--kaspi); color: white; }
-        .btn:hover { opacity: 0.9; transform: scale(1.02); }
 
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; 
             z-index: 1000; backdrop-filter: blur(5px);
         }
-        .modal-content { 
-            background: white; border-radius: 30px; max-width: 420px; width: 90%; 
-            padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; 
-        }
+        .modal-content { background: white; border-radius: 30px; max-width: 420px; width: 90%; padding: 30px; position: relative; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
     </style>
 </head>
@@ -84,46 +75,48 @@
 <div class="container">
     <div class="controls">
         <div class="filter-group">
-            <h4>Тип зимней шины</h4>
+            <h4>Тип шины</h4>
             <div id="typeChips" class="chips">
                 <button class="chip active" data-val="">Все</button>
                 <button class="chip" data-val="ШИПЫ">Шипы</button>
                 <button class="chip" data-val="ЛИПУЧКИ">Липучки</button>
+                <button class="chip" data-val="ПОДШИП">Подшип</button>
+                <button class="chip" data-val="ЛЕТНИЕ">Летние</button>
             </div>
         </div>
-
         <div class="filter-group"><h4>Ширина</h4><div id="widthChips" class="chips"></div></div>
         <div class="filter-group"><h4>Высота</h4><div id="heightChips" class="chips"></div></div>
         <div class="filter-group"><h4>Диаметр</h4><div id="diamChips" class="chips"></div></div>
         
         <div class="bottom-actions">
             <select id="sortOrder" class="sort-select" onchange="render()">
-                <option value="default">Сортировка</option>
+                <option value="default">Сортировка по цене</option>
                 <option value="cheap">Сначала дешевые</option>
                 <option value="expensive">Сначала дорогие</option>
             </select>
-            <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ</button>
+            <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ ВСЁ</button>
         </div>
     </div>
 
-    <div id="products">Загрузка каталога...</div>
+    <div id="products">Загрузка товаров...</div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeProduct()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close-modal" onclick="closeProduct()">&times;</span>
         <div style="text-align:center; margin-bottom:20px;">
-            <img id="mImg" src="" style="max-width:100%; height:200px; object-fit:contain;">
+            <img id="mImg" src="" style="max-width:100%; height:220px; object-fit:contain;">
         </div>
         <h2 id="mTitle" style="margin:0 0 10px; font-weight:900;"></h2>
-        <div id="mInfo" style="font-size:14px; color:#555; line-height:1.6;"></div>
-        <div id="mPrice" class="price" style="font-size:32px;"></div>
+        <div id="mInfo" style="font-size:14px; color:#555; line-height:1.6; margin-bottom:20px;"></div>
+        <div id="mPrice" class="price" style="font-size:32px; margin-bottom:20px;"></div>
         <div class="actions-stack" id="mActions"></div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script>
+// Ссылка на вашу CSV таблицу
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMe3Xbtzrt3WmiYKEOCv5WI_i4_cuR9AX1WxJrNKIHDXya8D1nwSq-YWhXz8wyS1BYWEN1g-bS5-y5/pub?output=csv";
 const kaspiLink = "https://pay.kaspi.kz/pay/oyxapf6c";
 
@@ -134,10 +127,7 @@ Papa.parse(csvUrl, {
     complete: function(res) {
         db = res.data.map(r => {
             const row = {}; 
-            for (let k in r) { 
-                // Приводим все ключи к нижнему регистру для надежности
-                row[k.trim().toLowerCase()] = r[k] ? r[k].toString().trim() : ""; 
-            }
+            for (let k in r) { row[k.trim().toLowerCase()] = r[k] ? r[k].toString().trim() : ""; }
             return row;
         });
         initFilters(); render();
@@ -145,7 +135,6 @@ Papa.parse(csvUrl, {
 });
 
 function initFilters() {
-    // Параметры для фильтрации по колонкам Ширина, Высота, Диаметр
     const params = [
         { key: 'ширина', id: 'widthChips' },
         { key: 'высота', id: 'heightChips' },
@@ -153,30 +142,26 @@ function initFilters() {
     ];
 
     params.forEach(pObj => {
-        const vals = [...new Set(db.map(p => p[pObj.key]))].filter(v => v).sort((a,b) => parseFloat(a)-parseFloat(b));
+        const vals = [...new Set(db.map(p => p[pObj.key]))]
+            .filter(v => v)
+            .sort((a,b) => parseFloat(a)-parseFloat(b));
+            
         const box = document.getElementById(pObj.id);
-        
         box.innerHTML = `<button class="chip active" data-val="">Все</button>`;
         vals.forEach(v => {
             const b = document.createElement('button'); 
-            b.className = 'chip'; 
-            b.textContent = v;
+            b.className = 'chip'; b.textContent = v;
             b.onclick = () => { 
                 box.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); 
-                b.classList.add('active'); 
-                f[pObj.key] = v; 
-                render(); 
+                b.classList.add('active'); f[pObj.key] = v; render(); 
             };
             box.appendChild(b);
         });
     });
 
-    // Фильтр Сезон (ШИПЫ / ЛИПУЧКИ)
     document.querySelectorAll('#typeChips .chip').forEach(b => b.onclick = () => {
         document.querySelectorAll('#typeChips .chip').forEach(x => x.classList.remove('active')); 
-        b.classList.add('active'); 
-        f.сезон = b.dataset.val; 
-        render();
+        b.classList.add('active'); f.сезон = b.dataset.val; render();
     });
 }
 
@@ -185,7 +170,7 @@ function render() {
     const sort = document.getElementById("sortOrder").value;
     
     let data = db.filter(p => 
-        (!f.сезон || p.сезон === f.сезон) && 
+        (!f.сезон || p.сезон.toUpperCase() === f.сезон.toUpperCase()) && 
         (!f.ширина || p.ширина === f.ширина) && 
         (!f.высота || p.высота === f.высота) && 
         (!f.диаметр || p.диаметр === f.диаметр)
@@ -194,7 +179,7 @@ function render() {
     if (sort === "cheap") data.sort((a,b) => (parseInt(a.цена)||0)-(parseInt(b.цена)||0));
     if (sort === "expensive") data.sort((a,b) => (parseInt(b.цена)||0)-(parseInt(a.цена)||0));
 
-    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center;'>Шины с такими параметрами не найдены.</p>";
+    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center;'>Ничего не найдено</p>";
     
     data.forEach(p => {
         const card = document.createElement("div");
@@ -206,7 +191,7 @@ function render() {
             <div class="card-size">${p.размер} • ${p.сезон}</div>
             <div class="price">${(parseInt(p.цена)||0).toLocaleString()} ₸</div>
             <div class="actions-stack" onclick="event.stopPropagation()">
-                <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">КУПИТЬ В ОДИН КЛИК</a>
+                <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">KASPI PAY</a>
                 <a href="https://wa.me/77010708660?text=Заказ: ${p.бренд} ${p.размер}" class="btn btn-wa" target="_blank">WHATSAPP</a>
             </div>
         `;
@@ -219,25 +204,30 @@ function openProduct(p) {
     document.getElementById("mTitle").textContent = p.бренд;
     document.getElementById("mPrice").textContent = (parseInt(p.цена)||0).toLocaleString() + " ₸";
     document.getElementById("mInfo").innerHTML = `
-        <p><strong>Размер:</strong> ${p.размер}</p>
-        <p><strong>Тип:</strong> ${p.сезон}</p>
-        <p><strong>Наличие шипов:</strong> ${p.шипы === 'Да' ? 'Есть' : 'Нет'}</p>
-        <p>${p.описание || ''}</p>
+        <strong>Размер:</strong> ${p.размер}<br>
+        <strong>Тип:</strong> ${p.сезон}<br>
+        ${p.описание ? '<br>' + p.описание : ''}
     `;
     document.getElementById("mActions").innerHTML = `
-        <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">ОПЛАТИТЬ ЧЕРЕЗ KASPI PAY</a>
-        <a href="https://wa.me/77010708660?text=Заказ: ${p.бренд} ${p.размер}" class="btn btn-wa" target="_blank">КОНСУЛЬТАЦИЯ В WHATSAPP</a>
+        <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">ОПЛАТИТЬ ЧЕРЕЗ KASPI</a>
+        <a href="https://wa.me/77010708660?text=Интересует: ${p.бренд} ${p.размер}" class="btn btn-wa" target="_blank">НАПИСАТЬ В WHATSAPP</a>
     `;
     document.getElementById("modalOverlay").style.display = "flex";
     document.body.style.overflow = "hidden";
 }
 
-function closeProduct() { document.getElementById("modalOverlay").style.display = "none"; document.body.style.overflow = "auto"; }
+function closeProduct() { 
+    document.getElementById("modalOverlay").style.display = "none"; 
+    document.body.style.overflow = "auto"; 
+}
 
 function resetFilters() {
     f = { сезон: "", ширина: "", высота: "", диаметр: "" };
     document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.chips').forEach(c => c.querySelector('[data-val=""]')?.classList.add('active'));
+    document.querySelectorAll('.chips').forEach(c => {
+        const allBtn = c.querySelector('[data-val=""]');
+        if (allBtn) allBtn.classList.add('active');
+    });
     render();
 }
 </script>
