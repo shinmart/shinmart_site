@@ -8,7 +8,7 @@
     <style>
         :root { 
             --accent: #e74c3c; 
-            --kaspi: #f14635; /* Цвет Kaspi */
+            --kaspi: #f14635; 
             --text-main: #1c1e21; 
             --text-gray: #70757a;
             --bg: #fdfdfd;
@@ -27,7 +27,6 @@
 
         .container { max-width: 1000px; margin: 0 auto; }
 
-        /* Блок фильтров */
         .controls { 
             background: white; padding: 25px; 
             border-radius: 20px; box-shadow: var(--card-shadow); margin-bottom: 40px;
@@ -42,10 +41,9 @@
         .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
 
         .bottom-actions { display: flex; gap: 12px; margin-top: 20px; border-top: 1px solid #f5f5f5; padding-top: 20px; }
-        select.sort-select { flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 12px; font-family: 'Montserrat'; font-weight: 300; }
+        select.sort-select { flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 12px; font-family: 'Montserrat'; font-weight: 300; outline: none; }
         .reset-btn { padding: 12px 20px; border: none; background: #fff1f0; border-radius: 12px; cursor: pointer; color: #f5222d; font-weight: 700; font-size: 11px; }
 
-        /* Сетка товаров */
         #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .card { 
             background: white; border-radius: 24px; padding: 20px; 
@@ -58,7 +56,6 @@
         .card-size { color: var(--text-gray); font-size: 13px; margin-bottom: 4px; }
         .price { font-size: 26px; font-weight: 900; margin: 15px 0; letter-spacing: -1px; }
 
-        /* Кнопки */
         .actions-stack { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
         .btn { 
             padding: 14px; border-radius: 14px; text-decoration: none; 
@@ -68,7 +65,6 @@
         .btn-kaspi { background: var(--kaspi); color: white; }
         .btn:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* Модалка */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; 
@@ -96,6 +92,7 @@
             </div>
         </div>
         <div class="filter-group"><h4>Ширина</h4><div id="widthChips" class="chips"></div></div>
+        <div class="filter-group"><h4>Высота</h4><div id="heightChips" class="chips"></div></div>
         <div class="filter-group"><h4>Диаметр</h4><div id="diamChips" class="chips"></div></div>
         
         <div class="bottom-actions">
@@ -128,7 +125,8 @@
 <script>
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMe3Xbtzrt3WmiYKEOCv5WI_i4_cuR9AX1WxJrNKIHDXya8D1nwSq-YWhXz8wyS1BYWEN1g-bS5-y5/pub?output=csv";
 const kaspiLink = "https://pay.kaspi.kz/pay/oyxapf6c";
-let db = [], f = { сезон: "", ширина: "", диаметр: "" };
+// В объект фильтров добавлена высота
+let db = [], f = { сезон: "", ширина: "", высота: "", диаметр: "" };
 
 Papa.parse(csvUrl, {
     download: true, header: true, skipEmptyLines: true,
@@ -142,30 +140,51 @@ Papa.parse(csvUrl, {
 });
 
 function initFilters() {
-    ['ширина', 'диаметр'].forEach((k, i) => {
+    // Теперь перебираем три параметра: ширина, высота, диаметр
+    ['ширина', 'высота', 'диаметр'].forEach((k, i) => {
         const vals = [...new Set(db.map(p => p[k]))].filter(v => v).sort((a,b) => parseFloat(a)-parseFloat(b));
-        const box = document.getElementById(i === 0 ? 'widthChips' : 'diamChips');
+        const ids = ['widthChips', 'heightChips', 'diamChips'];
+        const box = document.getElementById(ids[i]);
+        
         box.innerHTML = `<button class="chip active" data-val="">Все</button>`;
         vals.forEach(v => {
-            const b = document.createElement('button'); b.className = 'chip'; b.textContent = v;
-            b.onclick = () => { box.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); b.classList.add('active'); f[k] = v; render(); };
+            const b = document.createElement('button'); 
+            b.className = 'chip'; 
+            b.textContent = v;
+            b.onclick = () => { 
+                box.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); 
+                b.classList.add('active'); 
+                f[k] = v; 
+                render(); 
+            };
             box.appendChild(b);
         });
     });
     document.querySelectorAll('#seasonChips .chip').forEach(b => b.onclick = () => {
-        document.querySelectorAll('#seasonChips .chip').forEach(x => x.classList.remove('active')); b.classList.add('active'); f.сезон = b.dataset.val; render();
+        document.querySelectorAll('#seasonChips .chip').forEach(x => x.classList.remove('active')); 
+        b.classList.add('active'); 
+        f.сезон = b.dataset.val; 
+        render();
     });
 }
 
 function render() {
     const list = document.getElementById("products");
     const sort = document.getElementById("sortOrder").value;
-    let data = db.filter(p => (!f.сезон || p.сезон === f.сезон) && (!f.ширина || p.ширина === f.ширина) && (!f.диаметр || p.диаметр === f.диаметр) && (p.наличие.toLowerCase() === "да"));
+    
+    // В фильтрацию данных добавлена проверка высоты
+    let data = db.filter(p => 
+        (!f.сезон || p.сезон === f.сезон) && 
+        (!f.ширина || p.ширина === f.ширина) && 
+        (!f.высота || p.высота === f.высота) && 
+        (!f.диаметр || p.диаметр === f.диаметр) && 
+        (p.наличие.toLowerCase() === "да")
+    );
     
     if (sort === "cheap") data.sort((a,b) => (parseInt(a.цена)||0)-(parseInt(b.цена)||0));
     if (sort === "expensive") data.sort((a,b) => (parseInt(b.цена)||0)-(parseInt(a.цена)||0));
 
-    list.innerHTML = "";
+    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center;'>Шины с такими параметрами не найдены.</p>";
     data.forEach(p => {
         const card = document.createElement("div");
         card.className = "card";
@@ -200,11 +219,12 @@ function openProduct(p) {
 function closeProduct() { document.getElementById("modalOverlay").style.display = "none"; document.body.style.overflow = "auto"; }
 
 function resetFilters() {
-    f = { сезон: "", ширина: "", диаметр: "" };
+    // Сброс высоты в объекте
+    f = { сезон: "", ширина: "", высота: "", диаметр: "" };
     document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.chips').forEach(c => c.querySelector('[data-val=""]')?.classList.add('active'));
     render();
 }
 </script>
 </body>
-</html> 
+</html>
