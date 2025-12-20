@@ -12,60 +12,72 @@
             --text-main: #1c1e21; 
             --text-gray: #70757a;
             --bg: #fdfdfd;
-            --card-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         body { 
             font-family: 'Montserrat', sans-serif; font-weight: 300; 
-            margin: 0; padding: 20px; background: var(--bg); color: var(--text-main); line-height: 1.5; 
+            margin: 0; padding: 20px; background: var(--bg); color: var(--text-main); line-height: 1.6; 
         }
 
-        header { padding: 40px 0; text-align: center; }
-        header h1 { margin: 0; font-size: 42px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+        header { padding: 60px 0; text-align: center; }
+        header h1 { margin: 0; font-size: 48px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
         header h1 span { color: var(--accent); }
 
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 1100px; margin: 0 auto; }
 
+        /* Блок фильтров с воздухом */
         .controls { 
-            background: white; padding: 25px; border-radius: 20px; 
-            box-shadow: var(--card-shadow); margin-bottom: 40px;
+            background: white; padding: 35px; border-radius: 24px; 
+            box-shadow: var(--card-shadow); margin-bottom: 50px;
         }
-        .filter-group { margin-bottom: 25px; }
-        .filter-group h4 { margin: 0 0 12px 0; font-size: 11px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; }
-        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .filter-group { margin-bottom: 30px; }
+        .filter-group h4 { margin: 0 0 15px 0; font-size: 12px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1.5px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 10px; }
         .chip { 
-            padding: 10px 18px; border: 1px solid #e0e0e0; background: white; border-radius: 12px; 
-            cursor: pointer; font-size: 13px; transition: 0.2s; font-family: 'Montserrat';
+            padding: 12px 20px; border: 1px solid #eee; background: white; border-radius: 14px; 
+            cursor: pointer; font-size: 13px; transition: 0.3s; font-family: 'Montserrat';
         }
-        .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
+        .chip:hover { border-color: #bbb; }
+        .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-        .bottom-actions { display: flex; gap: 12px; margin-top: 20px; border-top: 1px solid #f5f5f5; padding-top: 20px; }
-        select.sort-select { flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 12px; font-family: 'Montserrat'; outline: none; background: white; }
-        .reset-btn { padding: 12px 20px; border: none; background: #fff1f0; border-radius: 12px; cursor: pointer; color: #f5222d; font-weight: 700; font-size: 11px; font-family: 'Montserrat'; }
+        .bottom-actions { display: flex; gap: 15px; margin-top: 30px; border-top: 1px solid #f0f0f0; padding-top: 30px; align-items: center; }
+        select.sort-select { flex-grow: 1; padding: 14px; border: 1px solid #eee; border-radius: 14px; font-family: 'Montserrat'; outline: none; background: #f9f9f9; }
+        .reset-btn { padding: 14px 25px; border: none; background: #fff1f0; border-radius: 14px; cursor: pointer; color: #f5222d; font-weight: 700; font-size: 12px; font-family: 'Montserrat'; transition: 0.2s; }
+        .reset-btn:hover { background: #ffccc7; }
 
-        #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        /* Карточки товаров */
+        #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         .card { 
-            background: white; border-radius: 24px; padding: 20px; 
-            box-shadow: var(--card-shadow); transition: 0.3s; display: flex; flex-direction: column; cursor: pointer;
+            background: white; border-radius: 28px; padding: 25px; 
+            box-shadow: var(--card-shadow); transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
+            display: flex; flex-direction: column; cursor: pointer; border: 1px solid rgba(0,0,0,0.02);
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
-        .card h3 { margin: 0 0 10px; font-size: 16px; font-weight: 700; height: 44px; overflow: hidden; line-height: 1.3; }
-        .card-size { color: var(--text-gray); font-size: 13px; margin-bottom: 4px; }
-        .price { font-size: 26px; font-weight: 900; margin: 15px 0; letter-spacing: -1px; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: 0.3s; }
+        .card h3 { margin: 0 0 12px; font-size: 18px; font-weight: 700; height: 50px; overflow: hidden; line-height: 1.4; }
+        .card-info-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; }
+        .price { font-size: 28px; font-weight: 900; margin: 20px 0; letter-spacing: -1px; }
 
-        .actions-stack { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
-        .btn { padding: 14px; border-radius: 14px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 700; transition: 0.2s; text-transform: uppercase; }
+        .actions-stack { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+        .btn { padding: 16px; border-radius: 16px; text-decoration: none; text-align: center; font-size: 12px; font-weight: 700; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-wa { background: #25d366; color: white; }
         .btn-kaspi { background: var(--kaspi); color: white; }
+        .btn:hover { opacity: 0.85; transform: scale(1.02); }
 
+        /* Модальное окно с воздухом */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; 
-            z-index: 1000; backdrop-filter: blur(5px); padding: 20px;
+            background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; 
+            z-index: 1000; backdrop-filter: blur(8px); padding: 20px;
         }
-        .modal-content { background: white; border-radius: 30px; max-width: 420px; width: 100%; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
+        .modal-content { 
+            background: white; border-radius: 35px; max-width: 500px; width: 100%; padding: 40px; 
+            position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); 
+        }
+        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #999; }
+        
+        #mInfo p { margin: 10px 0; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -91,25 +103,25 @@
         <div class="bottom-actions">
             <select id="sortOrder" class="sort-select" onchange="render()">
                 <option value="default">Сортировка по цене</option>
-                <option value="cheap">Сначала дешевые</option>
-                <option value="expensive">Сначала дорогие</option>
+                <option value="cheap">Сначала дешевле</option>
+                <option value="expensive">Сначала дороже</option>
             </select>
             <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ ВСЁ</button>
         </div>
     </div>
 
-    <div id="products">Загрузка товаров...</div>
+    <div id="products">Загрузка каталога...</div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeProduct()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close-modal" onclick="closeProduct()">&times;</span>
-        <div style="text-align:center; margin-bottom:20px;">
-            <img id="mImg" src="" style="max-width:100%; height:220px; object-fit:contain;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <img id="mImg" src="" style="max-width:100%; height:250px; object-fit:contain;">
         </div>
-        <h2 id="mTitle" style="margin:0 0 10px; font-weight:900; font-size: 20px;"></h2>
-        <div id="mInfo" style="font-size:14px; color:#555; line-height:1.6; margin-bottom:20px;"></div>
-        <div id="mPrice" class="price" style="font-size:32px; margin-bottom:20px;"></div>
+        <h2 id="mTitle" style="margin:0 0 15px; font-weight:900; font-size: 24px;"></h2>
+        <div id="mInfo" style="font-size:15px; color:#444; margin-bottom:25px;"></div>
+        <div id="mPrice" class="price" style="font-size:36px; margin: 25px 0;"></div>
         <div class="actions-stack" id="mActions"></div>
     </div>
 </div>
@@ -121,7 +133,6 @@ const kaspiLink = "https://pay.kaspi.kz/pay/oyxapf6c";
 
 let db = [], f = { тип: "", ширина: "", высота: "", диаметр: "" };
 
-// Функция для очистки цены от "Т" и пробелов
 function parsePrice(str) {
     if (!str) return 0;
     return parseInt(str.replace(/[^0-9]/g, '')) || 0;
@@ -184,7 +195,7 @@ function render() {
     if (sort === "cheap") data.sort((a,b) => parsePrice(a.цена) - parsePrice(b.цена));
     if (sort === "expensive") data.sort((a,b) => parsePrice(b.цена) - parsePrice(a.цена));
 
-    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Товаров с такими параметрами сейчас нет в наличии.</p>";
+    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center; padding: 60px; color: #999;'>Товаров с такими параметрами сейчас нет.</p>";
     
     data.forEach(p => {
         const card = document.createElement("div");
@@ -195,12 +206,12 @@ function render() {
         card.innerHTML = `
             <img src="${p['фото 1'] || 'https://via.placeholder.com/250'}" alt="">
             <h3>${p.бренд}</h3>
-            <div class="card-size">Размер: ${p.размер}</div>
-            <div class="card-size">Тип: ${p.тип}</div>
+            <div class="card-info-row"><span>Размер:</span> <span><strong>${p.размер}</strong></span></div>
+            <div class="card-info-row"><span>Тип:</span> <span>${p.тип}</span></div>
             <div class="price">${displayPrice} ₸</div>
             <div class="actions-stack" onclick="event.stopPropagation()">
                 <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">KASPI PAY</a>
-                <a href="https://wa.me/77010708660?text=Здравствуйте! Хочу заказать: ${p.бренд} (${p.размер})" class="btn btn-wa" target="_blank">WHATSAPP</a>
+                <a href="https://wa.me/77010708660?text=Заказ: ${p.бренд} (${p.размер})" class="btn btn-wa" target="_blank">WhatsApp</a>
             </div>
         `;
         list.appendChild(card);
@@ -214,14 +225,14 @@ function openProduct(p) {
     document.getElementById("mPrice").textContent = displayPrice + " ₸";
     
     document.getElementById("mInfo").innerHTML = `
-        <strong>Параметры:</strong> ${p.размер}<br>
-        <strong>Тип протектора:</strong> ${p.тип}<br>
-        ${p.описание ? '<br><strong>Описание:</strong><br>' + p.описание : ''}
+        <p><strong>Параметры:</strong> ${p.размер}</p>
+        <p><strong>Тип протектора:</strong> ${p.тип}</p>
+        ${p.описание ? '<div style="margin-top:20px; color:#666; font-size:14px; line-height:1.8;">' + p.описание + '</div>' : ''}
     `;
     
     document.getElementById("mActions").innerHTML = `
-        <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">ОПЛАТИТЬ ЧЕРЕЗ KASPI</a>
-        <a href="https://wa.me/77010708660?text=Здравствуйте! Интересуют шины: ${p.бренд}, размер ${p.размер}" class="btn btn-wa" target="_blank">НАПИСАТЬ В WHATSAPP</a>
+        <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">Оплатить через Kaspi</a>
+        <a href="https://wa.me/77010708660?text=Интересуют шины: ${p.бренд}, размер ${p.размер}" class="btn btn-wa" target="_blank">Написать в WhatsApp</a>
     `;
     document.getElementById("modalOverlay").style.display = "flex";
     document.body.style.overflow = "hidden";
