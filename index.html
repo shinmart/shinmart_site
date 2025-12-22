@@ -16,11 +16,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body { 
-            font-family: 'Montserrat', sans-serif; font-weight: 300; 
-            margin: 0; padding: 15px; background: var(--bg); color: var(--text-main); line-height: 1.6; 
-        }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 15px; background: var(--bg); color: var(--text-main); padding-bottom: 100px; }
 
         header { padding: 30px 0; text-align: center; }
         header h1 { margin: 0; font-size: clamp(28px, 8vw, 48px); font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
@@ -28,109 +24,47 @@
 
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* Блок фильтров */
-        .controls { 
-            background: white; padding: 20px; border-radius: 24px; 
-            box-shadow: var(--card-shadow); margin-bottom: 30px;
-        }
-        
+        /* Фильтры */
+        .controls { background: white; padding: 20px; border-radius: 24px; box-shadow: var(--card-shadow); margin-bottom: 30px; }
         .filter-group { margin-bottom: 20px; }
-        .filter-group h4 { 
-            margin: 0 0 10px 0; font-size: 11px; font-weight: 700; 
-            color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; 
-        }
+        .filter-group h4 { margin: 0 0 10px 0; font-size: 11px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; }
+        .chips { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip { flex: 0 0 auto; padding: 10px 18px; border: 1px solid #eee; background: white; border-radius: 12px; cursor: pointer; font-size: 13px; }
+        .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
 
-        /* Улучшенные чипсы с прокруткой на мобилках */
-        .chips { 
-            display: flex; flex-wrap: nowrap; gap: 8px; 
-            overflow-x: auto; padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-        }
-        .chips::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
-
-        /* На больших экранах разрешаем перенос */
-        @media (min-width: 768px) {
-            .chips { flex-wrap: wrap; overflow-x: visible; }
-            body { padding: 20px; }
-            .controls { padding: 35px; }
-        }
-
-        .chip { 
-            flex: 0 0 auto; padding: 10px 18px; border: 1px solid #eee; 
-            background: white; border-radius: 12px; cursor: pointer; 
-            font-size: 13px; transition: 0.3s; font-family: 'Montserrat';
-            white-space: nowrap;
-        }
-        .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-
-        .bottom-actions { 
-            display: flex; flex-direction: column; gap: 12px; 
-            margin-top: 20px; border-top: 1px solid #f0f0f0; padding-top: 20px; 
-        }
-        
-        @media (min-width: 480px) {
-            .bottom-actions { flex-direction: row; align-items: center; }
-        }
-
-        select.sort-select { 
-            width: 100%; padding: 14px; border: 1px solid #eee; 
-            border-radius: 14px; font-family: 'Montserrat'; outline: none; 
-            background: #f9f9f9; font-size: 14px; -webkit-appearance: none;
-        }
-        
-        .reset-btn { 
-            width: 100%; padding: 14px; border: none; background: #fff1f0; 
-            border-radius: 14px; cursor: pointer; color: #f5222d; 
-            font-weight: 700; font-size: 12px; text-transform: uppercase;
-        }
-
-        /* Карточки товаров - Адаптивная сетка */
-        #products { 
-            display: grid; 
-            grid-template-columns: 1fr; /* По умолчанию 1 колонка (мобилки) */
-            gap: 20px; 
-        }
-
+        /* Сетка товаров */
+        #products { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 600px) { #products { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 900px) { #products { grid-template-columns: repeat(3, 1fr); } }
 
-        .card { 
-            background: white; border-radius: 24px; padding: 20px; 
-            box-shadow: var(--card-shadow); transition: 0.3s; 
-            display: flex; flex-direction: column; cursor: pointer; 
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-        
+        .card { background: white; border-radius: 24px; padding: 20px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.03); }
         .card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; }
-        .card h3 { margin: 0 0 10px; font-size: 17px; font-weight: 700; min-height: 48px; line-height: 1.3; }
-        .card-info-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-gray); margin-bottom: 5px; }
-        .price { font-size: 24px; font-weight: 900; margin: 15px 0; color: #000; }
+        .card h3 { margin: 0 0 10px; font-size: 17px; min-height: 48px; }
+        .price { font-size: 24px; font-weight: 900; margin: 10px 0; }
 
-        .actions-stack { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
-        .btn { padding: 14px; border-radius: 14px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .btn-wa { background: #25d366; color: white; }
-        .btn-kaspi { background: var(--kaspi); color: white; }
+        /* Управление количеством */
+        .qty-controls { display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; border-radius: 14px; padding: 5px; margin-top: auto; }
+        .qty-btn { width: 40px; height: 40px; border: none; background: white; border-radius: 10px; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .qty-val { font-weight: 900; font-size: 16px; }
+        .add-to-cart-btn { width: 100%; padding: 15px; border: none; background: #121212; color: white; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-        /* Модальное окно */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); display: none; align-items: flex-end; 
-            justify-content: center; z-index: 1000; backdrop-filter: blur(8px);
+        /* Плавающая корзина */
+        .cart-bar { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            width: calc(100% - 40px); max-width: 500px; 
+            background: #121212; color: white; padding: 15px 25px; 
+            border-radius: 20px; display: none; justify-content: space-between; 
+            align-items: center; z-index: 2000; box-shadow: 0 15px 30px rgba(0,0,0,0.3); 
         }
-        
-        @media (min-width: 768px) { .modal-overlay { align-items: center; padding: 20px; } }
+        .cart-bar.active { display: flex; }
+        .cart-checkout { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        .modal-content { 
-            background: white; border-radius: 30px 30px 0 0; width: 100%; padding: 30px 20px; 
-            position: relative; max-height: 92vh; overflow-y: auto; 
-        }
-        
-        @media (min-width: 768px) { .modal-content { border-radius: 35px; max-width: 500px; padding: 40px; } }
-
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 32px; cursor: pointer; color: #ccc; z-index: 10; }
-        
-        #mInfo p { margin: 12px 0; border-bottom: 1px solid #f9f9f9; padding-bottom: 8px; font-size: 14px; }
+        /* Модалка корзины */
+        .cart-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: none; flex-direction: column; padding: 20px; }
+        .cart-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cart-items-list { flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -149,53 +83,52 @@
                 <button class="chip" data-val="ЛЕТНИЕ">Летние</button>
             </div>
         </div>
-        <div class="filter-group"><h4>Ширина</h4><div id="widthChips" class="chips"></div></div>
-        <div class="filter-group"><h4>Высота</h4><div id="heightChips" class="chips"></div></div>
         <div class="filter-group"><h4>Диаметр</h4><div id="diamChips" class="chips"></div></div>
-        
         <div class="bottom-actions">
-            <select id="sortOrder" class="sort-select" onchange="render()">
-                <option value="default">Сортировка по цене</option>
-                <option value="cheap">Сначала дешевле</option>
-                <option value="expensive">Сначала дороже</option>
-            </select>
-            <button class="reset-btn" onclick="resetFilters()">Сбросить</button>
+            <button class="reset-btn" onclick="resetFilters()">Сбросить всё</button>
         </div>
     </div>
 
-    <div id="products">Загрузка каталога...</div>
+    <div id="products">Загрузка товаров...</div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay" onclick="closeProduct()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="closeProduct()">&times;</span>
-        <div style="text-align:center; margin-bottom:20px;">
-            <img id="mImg" src="" style="max-width:100%; height:200px; object-fit:contain;">
+<div id="cartBar" class="cart-bar" onclick="showCartDetails()">
+    <div>
+        <span id="cartCount">0</span> товаров • <strong id="cartTotalSum">0</strong> ₸
+    </div>
+    <button class="cart-checkout">В КОРЗИНУ</button>
+</div>
+
+<div id="cartModal" class="cart-modal">
+    <div class="cart-modal-header">
+        <h2>Ваш заказ</h2>
+        <span style="font-size: 30px; cursor: pointer;" onclick="closeCartDetails()">&times;</span>
+    </div>
+    <div id="cartItemsList" class="cart-items-list"></div>
+    <div style="padding: 20px 0;">
+        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 900; margin-bottom: 20px;">
+            <span>Итого:</span>
+            <span id="finalSum">0 ₸</span>
         </div>
-        <h2 id="mTitle" style="margin:0 0 15px; font-weight:900; font-size: 22px;"></h2>
-        <div id="mInfo"></div>
-        <div id="mPrice" class="price" style="font-size:32px; text-align: center; margin: 20px 0;"></div>
-        <div class="actions-stack" id="mActions"></div>
+        <button class="add-to-cart-btn" style="background: #25d366;" onclick="sendOrder()">ЗАКАЗАТЬ ЧЕРЕЗ WHATSAPP</button>
+        <button class="add-to-cart-btn" style="background: var(--kaspi);" onclick="sendKaspi()">ОПЛАТИТЬ ЧЕРЕЗ KASPI PAY</button>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script>
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMe3Xbtzrt3WmiYKEOCv5WI_i4_cuR9AX1WxJrNKIHDXya8D1nwSq-YWhXz8wyS1BYWEN1g-bS5-y5/pub?output=csv";
+const WA_PHONE = "77010708660";
 const kaspiLink = "https://pay.kaspi.kz/pay/oyxapf6c";
 
-let db = [], f = { тип: "", ширина: "", высота: "", диаметр: "" };
-
-function parsePrice(str) {
-    if (!str) return 0;
-    return parseInt(str.replace(/[^0-9]/g, '')) || 0;
-}
+let db = [], f = { тип: "", диаметр: "" };
+let cart = {}; // { product_id: quantity }
 
 Papa.parse(csvUrl, {
     download: true, header: true, skipEmptyLines: true,
     complete: function(res) {
-        db = res.data.map(r => {
-            const row = {}; 
+        db = res.data.map((r, index) => {
+            const row = { id: index }; // Добавляем ID каждой строке
             for (let k in r) { row[k.trim().toLowerCase()] = r[k] ? r[k].toString().trim() : ""; }
             return row;
         });
@@ -204,28 +137,13 @@ Papa.parse(csvUrl, {
 });
 
 function initFilters() {
-    const params = [
-        { key: 'ширина', id: 'widthChips' },
-        { key: 'высота', id: 'heightChips' },
-        { key: 'диаметр', id: 'diamChips' }
-    ];
-
-    params.forEach(pObj => {
-        const vals = [...new Set(db.map(p => p[pObj.key]))]
-            .filter(v => v && v !== "")
-            .sort((a,b) => parseFloat(a)-parseFloat(b));
-            
-        const box = document.getElementById(pObj.id);
-        box.innerHTML = `<button class="chip active" data-val="">Все</button>`;
-        vals.forEach(v => {
-            const b = document.createElement('button'); 
-            b.className = 'chip'; b.textContent = v;
-            b.onclick = () => { 
-                box.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); 
-                b.classList.add('active'); f[pObj.key] = v; render(); 
-            };
-            box.appendChild(b);
-        });
+    const diamVals = [...new Set(db.map(p => p.диаметр))].filter(v => v).sort();
+    const box = document.getElementById('diamChips');
+    box.innerHTML = `<button class="chip active" data-val="">Все</button>`;
+    diamVals.forEach(v => {
+        const b = document.createElement('button'); b.className = 'chip'; b.textContent = v;
+        b.onclick = () => { box.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); b.classList.add('active'); f.диаметр = v; render(); };
+        box.appendChild(b);
     });
 
     document.querySelectorAll('#typeChips .chip').forEach(b => b.onclick = () => {
@@ -234,76 +152,109 @@ function initFilters() {
     });
 }
 
+function updateCart(productId, delta) {
+    const item = db.find(p => p.id === productId);
+    if (!cart[productId]) cart[productId] = 0;
+    
+    // Логика кратности 2
+    cart[productId] += delta;
+    
+    if (cart[productId] < 0) cart[productId] = 0;
+    if (cart[productId] > 0 && cart[productId] < 2) cart[productId] = delta > 0 ? 2 : 0;
+
+    render();
+    updateCartBar();
+}
+
+function updateCartBar() {
+    let count = 0;
+    let sum = 0;
+    for (let id in cart) {
+        if (cart[id] > 0) {
+            const p = db.find(item => item.id == id);
+            count += cart[id];
+            sum += cart[id] * parseInt(p.цена.replace(/\s/g, ''));
+        }
+    }
+    const bar = document.getElementById('cartBar');
+    if (count > 0) {
+        bar.classList.add('active');
+        document.getElementById('cartCount').textContent = count;
+        document.getElementById('cartTotalSum').textContent = sum.toLocaleString();
+    } else {
+        bar.classList.remove('active');
+    }
+}
+
 function render() {
     const list = document.getElementById("products");
-    const sort = document.getElementById("sortOrder").value;
+    let data = db.filter(p => (!f.тип || p.тип === f.тип) && (!f.диаметр || p.диаметр === f.диаметр));
     
-    let data = db.filter(p => 
-        (!f.тип || p.тип.toUpperCase() === f.тип.toUpperCase()) && 
-        (!f.ширина || p.ширина === f.ширина) && 
-        (!f.высота || p.высота === f.высота) && 
-        (!f.диаметр || p.диаметр === f.диаметр)
-    );
-    
-    if (sort === "cheap") data.sort((a,b) => parsePrice(a.цена) - parsePrice(b.цена));
-    if (sort === "expensive") data.sort((a,b) => parsePrice(b.цена) - parsePrice(a.цена));
-
-    list.innerHTML = data.length ? "" : "<p style='grid-column: 1/-1; text-align: center; padding: 40px; color: #999;'>Ничего не найдено</p>";
-    
+    list.innerHTML = "";
     data.forEach(p => {
+        const q = cart[p.id] || 0;
         const card = document.createElement("div");
         card.className = "card";
-        card.onclick = () => openProduct(p);
-        const displayPrice = parsePrice(p.цена).toLocaleString();
-        
         card.innerHTML = `
             <img src="${p['фото 1'] || 'https://via.placeholder.com/250'}" alt="">
-            <h3>${p.бренд}</h3>
-            <div class="card-info-row"><span>Размер:</span> <strong>${p.размер}</strong></div>
-            <div class="card-info-row"><span>Тип:</span> <span>${p.тип}</span></div>
-            <div class="price">${displayPrice} ₸</div>
-            <div class="actions-stack" onclick="event.stopPropagation()">
-                <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">KASPI PAY</a>
-                <a href="https://wa.me/77010708660?text=Заказ: ${p.бренд} (${p.размер})" class="btn btn-wa" target="_blank">WhatsApp</a>
+            <h3>${p.бренд} ${p.размер}</h3>
+            <div class="price">${p.цена} ₸</div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="updateCart(${p.id}, -2)">-</button>
+                <div class="qty-val">${q} шт</div>
+                <button class="qty-btn" onclick="updateCart(${p.id}, 2)">+</button>
             </div>
+            ${q === 0 ? `<button class="add-to-cart-btn" onclick="updateCart(${p.id}, 2)">ВЫБРАТЬ (мин. 2 шт)</button>` : ''}
         `;
         list.appendChild(card);
     });
 }
 
-function openProduct(p) {
-    document.getElementById("mImg").src = p['фото 1'] || 'https://via.placeholder.com/250';
-    document.getElementById("mTitle").textContent = p.бренд;
-    const displayPrice = parsePrice(p.цена).toLocaleString();
-    document.getElementById("mPrice").textContent = displayPrice + " ₸";
-    
-    document.getElementById("mInfo").innerHTML = `
-        <p><strong>Параметры:</strong> ${p.размер}</p>
-        <p><strong>Тип:</strong> ${p.тип}</p>
-        ${p.описание ? '<div style="margin-top:15px; color:#666; font-size:13px;">' + p.описание + '</div>' : ''}
-    `;
-    
-    document.getElementById("mActions").innerHTML = `
-        <a href="${kaspiLink}" class="btn btn-kaspi" target="_blank">Оплатить через Kaspi</a>
-        <a href="https://wa.me/77010708660?text=Интересуют шины: ${p.бренд}, размер ${p.размер}" class="btn btn-wa" target="_blank">WhatsApp консультация</a>
-    `;
-    document.getElementById("modalOverlay").style.display = "flex";
-    document.body.style.overflow = "hidden";
+function showCartDetails() {
+    const list = document.getElementById('cartItemsList');
+    list.innerHTML = "";
+    let total = 0;
+    for (let id in cart) {
+        if (cart[id] > 0) {
+            const p = db.find(item => item.id == id);
+            const itemSum = cart[id] * parseInt(p.цена.replace(/\s/g, ''));
+            total += itemSum;
+            list.innerHTML += `
+                <div class="cart-item">
+                    <div>
+                        <strong>${p.бренд}</strong><br>
+                        <small>${p.размер}</small>
+                    </div>
+                    <div>${cart[id]} шт x ${p.цена} ₸</div>
+                </div>
+            `;
+        }
+    }
+    document.getElementById('finalSum').textContent = total.toLocaleString() + " ₸";
+    document.getElementById('cartModal').style.display = 'flex';
 }
 
-function closeProduct() { 
-    document.getElementById("modalOverlay").style.display = "none"; 
-    document.body.style.overflow = "auto"; 
+function closeCartDetails() { document.getElementById('cartModal').style.display = 'none'; }
+
+function sendOrder() {
+    let text = "Здравствуйте! Хочу заказать шины:\n\n";
+    let total = 0;
+    for (let id in cart) {
+        if (cart[id] > 0) {
+            const p = db.find(item => item.id == id);
+            text += `• ${p.бренд} ${p.размер}\n  Кол-во: ${cart[id]} шт на сумму ${ (cart[id] * parseInt(p.цена.replace(/\s/g, ''))).toLocaleString() } ₸\n\n`;
+            total += cart[id] * parseInt(p.цена.replace(/\s/g, ''));
+        }
+    }
+    text += `ИТОГО: ${total.toLocaleString()} ₸`;
+    window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`);
 }
+
+function sendKaspi() { window.open(kaspiLink); }
 
 function resetFilters() {
-    f = { тип: "", ширина: "", высота: "", диаметр: "" };
+    f = { тип: "", диаметр: "" };
     document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.chips').forEach(c => {
-        const allBtn = c.querySelector('[data-val=""]');
-        if (allBtn) allBtn.classList.add('active');
-    });
-    document.getElementById("sortOrder").value = "default";
     render();
 }
 </script>
