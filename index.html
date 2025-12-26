@@ -3,32 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHINMART — Витрина</title>
+    <title>SHINMART — Премиальный выбор шин</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #e74c3c; --bg: #fdfdfd; --card-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 15px; background: var(--bg); padding-bottom: 100px; }
-        
-        .controls { background: white; padding: 20px; border-radius: 24px; box-shadow: var(--card-shadow); margin-bottom: 30px; }
-        .filter-group { margin-bottom: 15px; }
-        .filter-group h4 { margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; color: #70757a; }
-        
-        .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        :root { --accent: #e74c3c; --bg: #fdfdfd; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 15px; background: var(--bg); }
+        .controls { background: white; padding: 20px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group h4 { margin: 0 0 10px 0; font-size: 11px; font-weight: 700; color: #70757a; text-transform: uppercase; }
+        .chips { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
         .chips::-webkit-scrollbar { display: none; }
-        
-        .chip { flex: 0 0 auto; padding: 8px 16px; border: 1px solid #eee; background: white; border-radius: 10px; cursor: pointer; font-family: 'Montserrat'; font-size: 13px; }
+        .chip { flex: 0 0 auto; padding: 10px 18px; border: 1px solid #eee; background: white; border-radius: 12px; cursor: pointer; font-size: 13px; font-family: 'Montserrat'; transition: 0.2s; }
         .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
-
         #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 20px; padding: 15px; box-shadow: var(--card-shadow); border: 1px solid #f0f0f0; display: flex; flex-direction: column; cursor: pointer; }
-        .card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; }
-        .price { font-size: 22px; font-weight: 900; margin: 10px 0; color: #1c1e21; }
-
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
-        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: #121212; color: white; padding: 15px; border-radius: 15px; display: none; justify-content: space-between; align-items: center; }
-        
-        .add-to-cart-btn { width: 100%; padding: 15px; border: none; background: #121212; color: white; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; }
-        .reset-btn { width: 100%; padding: 10px; border: none; background: #fff1f0; color: #f5222d; border-radius: 10px; cursor: pointer; font-weight: 700; margin-top: 10px; }
+        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
+        .card img { width: 100%; height: 180px; object-fit: contain; }
+        .reset-btn { width: 100%; padding: 15px; border: none; background: #fff1f0; color: #f5222d; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -40,12 +30,11 @@
 <div class="container">
     <div class="controls">
         <div class="filter-group">
-            <h4>Тип шины</h4>
+            <h4>Тип шины (Сезон)</h4>
             <div id="typeChips" class="chips">
-                <button class="chip active" data-all="true" onclick="resetGroup('тип', this.parentElement)">Все</button>
-                <button class="chip" onclick="toggleFilter('тип', 'ШИПЫ', this, this.parentElement)">Шипы</button>
-                <button class="chip" onclick="toggleFilter('тип', 'ЛИПУЧКИ', this, this.parentElement)">Липучки</button>
-                <button class="chip" onclick="toggleFilter('тип', 'ЛЕТНИЕ', this, this.parentElement)">Летние</button>
+                <button class="chip active" data-all="true" onclick="resetGroup('сезон', this.parentElement)">Все</button>
+                <button class="chip" onclick="toggleFilter('сезон', 'ШИПЫ', this, this.parentElement)">Шипы</button>
+                <button class="chip" onclick="toggleFilter('сезон', 'ЛИПУЧКИ', this, this.parentElement)">Липучки</button>
             </div>
         </div>
         <div class="filter-group"><h4>Ширина</h4><div id="widthChips" class="chips"></div></div>
@@ -53,77 +42,58 @@
         <div class="filter-group"><h4>Диаметр</h4><div id="diamChips" class="chips"></div></div>
         <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ ВСЕ</button>
     </div>
-
-    <div id="products">Загрузка товаров...</div>
-</div>
-
-<div id="cartBar" class="cart-bar" onclick="showCartDetails()">
-    <div id="cartInfo">0 товаров • 0 ₸</div>
-    <button style="background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:700;">КОРЗИНА</button>
-</div>
-
-<div id="productModal" class="modal">
-    <button onclick="closeModal('productModal')" style="align-self: flex-start; background: none; border: none; font-size: 30px;">&larr;</button>
-    <div id="productDetailContent"></div>
+    <div id="products">Загрузка данных из таблицы...</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script>
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMe3Xbtzrt3WmiYKEOCv5WI_i4_cuR9AX1WxJrNKIHDXya8D1nwSq-YWhXz8wyS1BYWEN1g-bS5-y5/pub?output=csv";
-const WA_PHONE = "77010708660";
 
-let db = [], f = { тип: [], ширина: [], высота: [], диаметр: [] }, cart = {};
+let db = [], f = { сезон: [], ширина: [], высота: [], диаметр: [] };
 
-// 1. ЗАГРУЗКА ДАННЫХ
 Papa.parse(csvUrl, {
     download: true,
     header: true,
-    skipEmptyLines: true,
     complete: function(results) {
-        console.log("Данные загружены:", results.data.length);
-        db = results.data.map((row, index) => {
-            let cleanRow = { id: index };
+        // Приводим все ключи (заголовки) к нижнему регистру для надежности
+        db = results.data.map(row => {
+            let newRow = {};
             for (let key in row) {
-                // Приводим все ключи к нижнему регистру и удаляем лишнее
-                let newKey = key.trim().toLowerCase();
-                cleanRow[newKey] = row[key] ? row[key].toString().trim() : "";
+                newRow[key.trim().toLowerCase()] = row[key].trim();
             }
-            return cleanRow;
+            return newRow;
         });
-        
-        if (db.length > 0) {
-            initDynamicFilters();
-            render();
-        } else {
-            document.getElementById('products').innerHTML = "Ошибка: Таблица пуста.";
-        }
+        console.log("Данные загружены:", db[0]); // Проверка в консоли
+        initFilters();
+        render();
     }
 });
 
-// 2. СОЗДАНИЕ КНОПОК ФИЛЬТРОВ
-function initDynamicFilters() {
-    const keys = ['ширина', 'высота', 'диаметр'];
-    keys.forEach(key => {
-        const container = document.getElementById(key + 'Chips');
-        if (!container) return;
-        
-        // Берем уникальные значения
-        let uniqueVals = [...new Set(db.map(item => item[key]))]
-            .filter(v => v !== "" && v !== undefined)
+function initFilters() {
+    // Названия ключей теперь точно в нижнем регистре
+    const config = [
+        { key: 'ширина', id: 'widthChips' },
+        { key: 'высота', id: 'heightChips' },
+        { key: 'диаметр', id: 'diamChips' }
+    ];
+
+    config.forEach(conf => {
+        const container = document.getElementById(conf.id);
+        // Получаем уникальные значения и сортируем их
+        let vals = [...new Set(db.map(p => p[conf.key]))]
+            .filter(v => v && v !== "")
             .sort((a, b) => parseFloat(a) - parseFloat(b));
 
-        let html = `<button class="chip active" data-all="true" onclick="resetGroup('${key}', this.parentElement)">Все</button>`;
-        uniqueVals.forEach(val => {
-            html += `<button class="chip" onclick="toggleFilter('${key}', '${val}', this, this.parentElement)">${val}</button>`;
+        let html = `<button class="chip active" data-all="true" onclick="resetGroup('${conf.key}', this.parentElement)">Все</button>`;
+        vals.forEach(v => {
+            html += `<button class="chip" onclick="toggleFilter('${conf.key}', '${v}', this, this.parentElement)">${v}</button>`;
         });
         container.innerHTML = html;
     });
 }
 
-// 3. ЛОГИКА ФИЛЬТРАЦИИ
-function toggleFilter(key, val, btn, container) {
-    const allBtn = container.querySelector('[data-all="true"]');
-    
+function toggleFilter(key, val, btn, box) {
+    const allBtn = box.querySelector('[data-all="true"]');
     if (f[key].includes(val)) {
         f[key] = f[key].filter(v => v !== val);
         btn.classList.remove('active');
@@ -131,106 +101,46 @@ function toggleFilter(key, val, btn, container) {
         f[key].push(val);
         btn.classList.add('active');
     }
-
-    if (f[key].length === 0) allBtn.classList.add('active');
-    else allBtn.classList.remove('active');
-
+    f[key].length === 0 ? allBtn.classList.add('active') : allBtn.classList.remove('active');
     render();
 }
 
-function resetGroup(key, container) {
+function resetGroup(key, box) {
     f[key] = [];
-    container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    container.querySelector('[data-all="true"]').classList.add('active');
+    box.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    box.querySelector('[data-all="true"]').classList.add('active');
     render();
 }
 
 function resetFilters() {
-    f = { тип: [], ширина: [], высота: [], диаметр: [] };
+    f = { сезон: [], ширина: [], высота: [], диаметр: [] };
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('[data-all="true"]').forEach(c => c.classList.add('active'));
     render();
 }
 
-// 4. ОТОБРАЖЕНИЕ ТОВАРОВ
 function render() {
     const list = document.getElementById("products");
-    let filtered = db.filter(p => {
-        return (f.тип.length === 0 || f.тип.includes(p.тип?.toUpperCase())) &&
-               (f.ширина.length === 0 || f.ширина.includes(p.ширина)) &&
-               (f.высота.length === 0 || f.высота.includes(p.высота)) &&
-               (f.диаметр.length === 0 || f.диаметр.includes(p.диаметр));
-    });
+    let data = db.filter(p => 
+        (f.сезон.length === 0 || f.сезон.includes(p.сезон)) &&
+        (f.ширина.length === 0 || f.ширина.includes(p.ширина)) &&
+        (f.высота.length === 0 || f.высота.includes(p.высота)) &&
+        (f.диаметр.length === 0 || f.диаметр.includes(p.диаметр))
+    );
 
-    list.innerHTML = "";
-    if (filtered.length === 0) {
-        list.innerHTML = "<p style='text-align:center; width:100%;'>Товары не найдены</p>";
-        return;
-    }
-
-    filtered.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.onclick = () => openProduct(p);
-        card.innerHTML = `
+    list.innerHTML = data.length ? "" : "<p>Ничего не найдено</p>";
+    data.forEach(p => {
+        if(!p.бренд) return;
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `
             <img src="${p['фото 1'] || 'https://via.placeholder.com/200'}">
-            <h3 style="margin:0; font-size:16px;">${p.бренд} ${p.размер || ''}</h3>
-            <div class="price">${p.цена} ₸</div>
-            <button class="add-to-cart-btn" onclick="addToCart(event, ${p.id})">ВЫБРАТЬ</button>
+            <h3 style="font-size:16px;">${p.бренд}</h3>
+            <p style="color:gray;">${p.размер}</p>
+            <div style="font-size:20px; font-weight:900;">${p.цена} ₸</div>
         `;
-        list.appendChild(card);
+        list.appendChild(c);
     });
-}
-
-// 5. КОРЗИНА И МОДАЛКА
-function openProduct(p) {
-    const modal = document.getElementById('productModal');
-    document.getElementById('productDetailContent').innerHTML = `
-        <img src="${p['фото 1']}" style="width:100%; max-height:300px; object-fit:contain;">
-        <h2>${p.бренд} ${p.размер}</h2>
-        <p><strong>Тип:</strong> ${p.тип}</p>
-        <p><strong>Параметры:</strong> ${p.ширина}/${p.высота} R${p.диаметр}</p>
-        <div style="background:#f5f5f5; padding:15px; border-radius:10px; margin:20px 0;">
-            ${p.описание || "Описание премиальной шины Shinmart."}
-        </div>
-        <div class="price" style="font-size:30px;">${p.цена} ₸</div>
-        <button class="add-to-cart-btn" onclick="addToCart(null, ${p.id}); closeModal('productModal')">ДОБАВИТЬ В КОРЗИНУ</button>
-    `;
-    modal.style.display = 'flex';
-}
-
-function addToCart(e, id) {
-    if (e) e.stopPropagation();
-    cart[id] = (cart[id] || 0) + 2; // Добавляем по 2 шт
-    updateCartBar();
-}
-
-function updateCartBar() {
-    let count = 0, sum = 0;
-    for (let id in cart) {
-        if (cart[id] > 0) {
-            let p = db.find(item => item.id == id);
-            let price = parseInt(p.цена.replace(/\s/g, '')) || 0;
-            count += cart[id];
-            sum += cart[id] * price;
-        }
-    }
-    const bar = document.getElementById('cartBar');
-    if (count > 0) {
-        bar.style.display = 'flex';
-        document.getElementById('cartInfo').innerText = `${count} товаров • ${sum.toLocaleString()} ₸`;
-    }
-}
-
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-function sendOrder() {
-    let text = "Здравствуйте! Хочу купить шины:\n";
-    for(let id in cart) {
-        let p = db.find(i => i.id == id);
-        text += `- ${p.бренд} ${p.размер} (${cart[id]} шт)\n`;
-    }
-    window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`);
 }
 </script>
 </body>
