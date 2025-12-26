@@ -3,34 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHINMART — Премиальный выбор шин</title>
+    <title>SHINMART — Магазин шин</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #e74c3c; --bg: #fdfdfd; }
-        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 15px; background: var(--bg); }
+        :root { --accent: #e74c3c; --bg: #fdfdfd; --dark: #121212; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 15px; background: var(--bg); padding-bottom: 100px; }
+        
+        /* Фильтры */
         .controls { background: white; padding: 20px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .filter-group { margin-bottom: 20px; }
-        .filter-group h4 { margin: 0 0 10px 0; font-size: 11px; font-weight: 700; color: #70757a; text-transform: uppercase; }
-        .chips { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-group { margin-bottom: 15px; }
+        .filter-group h4 { margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; color: #70757a; }
+        .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .chips::-webkit-scrollbar { display: none; }
-        .chip { flex: 0 0 auto; padding: 10px 18px; border: 1px solid #eee; background: white; border-radius: 12px; cursor: pointer; font-size: 13px; font-family: 'Montserrat'; transition: 0.2s; }
-        .chip.active { background: #121212; color: white; border-color: #121212; font-weight: 700; }
+        .chip { flex: 0 0 auto; padding: 10px 18px; border: 1px solid #eee; background: white; border-radius: 12px; cursor: pointer; font-family: 'Montserrat'; font-size: 13px; }
+        .chip.active { background: var(--dark); color: white; border-color: var(--dark); font-weight: 700; }
+
+        /* Сетка товаров */
         #products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        .card img { width: 100%; height: 180px; object-fit: contain; }
-        .reset-btn { width: 100%; padding: 15px; border: none; background: #fff1f0; color: #f5222d; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: 0.2s; }
+        .card img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; }
+        .price { font-size: 24px; font-weight: 900; margin: 10px 0; }
+
+        /* Кнопки и Управление */
+        .add-btn { width: 100%; padding: 15px; border: none; background: var(--dark); color: white; border-radius: 14px; font-weight: 700; cursor: pointer; font-family: 'Montserrat'; }
+        .qty-box { display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; border-radius: 14px; padding: 5px; margin-top: auto; }
+        .qty-btn { width: 35px; height: 35px; border: none; background: white; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+        /* Плашка корзины */
+        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: var(--dark); color: white; padding: 15px 20px; border-radius: 20px; display: none; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); cursor: pointer; }
+        
+        /* Модальное окно */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        
+        .reset-btn { width: 100%; padding: 12px; border: none; background: #fff1f0; color: #f5222d; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<header style="text-align: center; padding: 20px;">
-    <h1 style="font-weight: 900; margin: 0;">SHINMART<span style="color:var(--accent)">.</span></h1>
-</header>
+<header style="text-align: center; padding: 20px;"><h1 style="font-weight: 900; margin: 0;">SHINMART<span style="color:var(--accent)">.</span></h1></header>
 
 <div class="container">
     <div class="controls">
         <div class="filter-group">
-            <h4>Тип шины (Сезон)</h4>
+            <h4>Тип шины</h4>
             <div id="typeChips" class="chips">
                 <button class="chip active" data-all="true" onclick="resetGroup('сезон', this.parentElement)">Все</button>
                 <button class="chip" onclick="toggleFilter('сезон', 'ШИПЫ', this, this.parentElement)">Шипы</button>
@@ -40,54 +57,59 @@
         <div class="filter-group"><h4>Ширина</h4><div id="widthChips" class="chips"></div></div>
         <div class="filter-group"><h4>Высота</h4><div id="heightChips" class="chips"></div></div>
         <div class="filter-group"><h4>Диаметр</h4><div id="diamChips" class="chips"></div></div>
-        <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ ВСЕ</button>
+        <button class="reset-btn" onclick="resetFilters()">СБРОСИТЬ ВСЕ ФИЛЬТРЫ</button>
     </div>
-    <div id="products">Загрузка данных из таблицы...</div>
+
+    <div id="products">Загрузка товаров...</div>
+</div>
+
+<div id="cartBar" class="cart-bar" onclick="openCart()">
+    <div id="cartSummary">0 товаров • 0 ₸</div>
+    <button style="background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:700;">ЗАКАЗАТЬ</button>
+</div>
+
+<div id="cartModal" class="modal">
+    <div class="modal-header">
+        <h2 style="margin:0;">Ваш заказ</h2>
+        <button onclick="closeCart()" style="background:none; border:none; font-size:30px;">&times;</button>
+    </div>
+    <div id="cartList" style="flex-grow:1;"></div>
+    <div style="padding-top:20px; border-top:2px solid #eee;">
+        <div style="display:flex; justify-content:space-between; font-size:22px; font-weight:900; margin-bottom:20px;">
+            <span>Итого:</span><span id="cartTotal">0 ₸</span>
+        </div>
+        <button class="add-btn" style="background:#25d366;" onclick="sendWhatsApp()">ОФОРМИТЬ ЧЕРЕЗ WHATSAPP</button>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script>
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMe3Xbtzrt3WmiYKEOCv5WI_i4_cuR9AX1WxJrNKIHDXya8D1nwSq-YWhXz8wyS1BYWEN1g-bS5-y5/pub?output=csv";
+const WA_PHONE = "77010708660";
 
-let db = [], f = { сезон: [], ширина: [], высота: [], диаметр: [] };
+let db = [], f = { сезон: [], ширина: [], высота: [], диаметр: [] }, cart = {};
 
+// Загрузка
 Papa.parse(csvUrl, {
-    download: true,
-    header: true,
-    complete: function(results) {
-        // Приводим все ключи (заголовки) к нижнему регистру для надежности
-        db = results.data.map(row => {
-            let newRow = {};
-            for (let key in row) {
-                newRow[key.trim().toLowerCase()] = row[key].trim();
-            }
-            return newRow;
+    download: true, header: true, skipEmptyLines: true,
+    complete: function(res) {
+        db = res.data.map((row, i) => {
+            let item = { id: i };
+            for (let k in row) { item[k.trim().toLowerCase()] = row[k] ? row[k].toString().trim() : ""; }
+            return item;
         });
-        console.log("Данные загружены:", db[0]); // Проверка в консоли
         initFilters();
         render();
     }
 });
 
 function initFilters() {
-    // Названия ключей теперь точно в нижнем регистре
-    const config = [
-        { key: 'ширина', id: 'widthChips' },
-        { key: 'высота', id: 'heightChips' },
-        { key: 'диаметр', id: 'diamChips' }
-    ];
-
-    config.forEach(conf => {
-        const container = document.getElementById(conf.id);
-        // Получаем уникальные значения и сортируем их
-        let vals = [...new Set(db.map(p => p[conf.key]))]
-            .filter(v => v && v !== "")
-            .sort((a, b) => parseFloat(a) - parseFloat(b));
-
-        let html = `<button class="chip active" data-all="true" onclick="resetGroup('${conf.key}', this.parentElement)">Все</button>`;
-        vals.forEach(v => {
-            html += `<button class="chip" onclick="toggleFilter('${conf.key}', '${v}', this, this.parentElement)">${v}</button>`;
-        });
+    const groups = [{k:'ширина', id:'widthChips'}, {k:'высота', id:'heightChips'}, {k:'диаметр', id:'diamChips'}];
+    groups.forEach(g => {
+        const container = document.getElementById(g.id);
+        const vals = [...new Set(db.map(p => p[g.k]))].filter(v => v).sort((a,b) => parseFloat(a)-parseFloat(b));
+        let html = `<button class="chip active" data-all="true" onclick="resetGroup('${g.k}', this.parentElement)">Все</button>`;
+        vals.forEach(v => html += `<button class="chip" onclick="toggleFilter('${g.k}', '${v}', this, this.parentElement)">${v}</button>`);
         container.innerHTML = html;
     });
 }
@@ -119,28 +141,96 @@ function resetFilters() {
     render();
 }
 
+function updateCart(id, delta) {
+    cart[id] = (cart[id] || 0) + delta;
+    if (cart[id] < 0) cart[id] = 0;
+    if (cart[id] > 0 && cart[id] < 2) cart[id] = delta > 0 ? 2 : 0;
+    render();
+    updateCartBar();
+    if (document.getElementById('cartModal').style.display === 'flex') openCart();
+}
+
+function updateCartBar() {
+    let count = 0, sum = 0;
+    for (let id in cart) {
+        if (cart[id] > 0) {
+            let p = db.find(i => i.id == id);
+            count += cart[id];
+            sum += cart[id] * parseInt(p.цена.replace(/\s/g, ''));
+        }
+    }
+    const bar = document.getElementById('cartBar');
+    if (count > 0) {
+        bar.style.display = 'flex';
+        document.getElementById('cartSummary').innerText = `${count} шт. • ${sum.toLocaleString()} ₸`;
+    } else {
+        bar.style.display = 'none';
+        closeCart();
+    }
+}
+
 function render() {
     const list = document.getElementById("products");
-    let data = db.filter(p => 
-        (f.сезон.length === 0 || f.сезон.includes(p.сезон)) &&
+    let filtered = db.filter(p => 
+        (f.сезон.length === 0 || f.сезон.includes(p.сезон?.toUpperCase())) &&
         (f.ширина.length === 0 || f.ширина.includes(p.ширина)) &&
         (f.высота.length === 0 || f.высота.includes(p.высота)) &&
         (f.диаметр.length === 0 || f.диаметр.includes(p.диаметр))
     );
 
-    list.innerHTML = data.length ? "" : "<p>Ничего не найдено</p>";
-    data.forEach(p => {
-        if(!p.бренд) return;
-        const c = document.createElement("div");
-        c.className = "card";
-        c.innerHTML = `
+    list.innerHTML = filtered.length ? "" : "<p style='grid-column:1/-1; text-align:center;'>Товары не найдены</p>";
+    
+    filtered.forEach(p => {
+        const q = cart[p.id] || 0;
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
             <img src="${p['фото 1'] || 'https://via.placeholder.com/200'}">
-            <h3 style="font-size:16px;">${p.бренд}</h3>
-            <p style="color:gray;">${p.размер}</p>
-            <div style="font-size:20px; font-weight:900;">${p.цена} ₸</div>
+            <h3 style="margin:0; font-size:16px;">${p.бренд} ${p.размер || ''}</h3>
+            <div class="price">${parseInt(p.цена).toLocaleString()} ₸</div>
+            ${q > 0 ? `
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateCart(${p.id}, -2)">-</button>
+                    <span style="font-weight:900;">${q} шт</span>
+                    <button class="qty-btn" onclick="updateCart(${p.id}, 2)">+</button>
+                </div>
+            ` : `
+                <button class="add-btn" onclick="updateCart(${p.id}, 2)">ВЫБРАТЬ</button>
+            `}
         `;
-        list.appendChild(c);
+        list.appendChild(div);
     });
+}
+
+function openCart() {
+    const list = document.getElementById('cartList');
+    list.innerHTML = ""; let total = 0;
+    for (let id in cart) if (cart[id] > 0) {
+        let p = db.find(i => i.id == id);
+        let sum = cart[id] * parseInt(p.цена.replace(/\s/g, ''));
+        total += sum;
+        list.innerHTML += `
+            <div class="cart-item">
+                <div><b>${p.бренд}</b><br><small>${p.размер}</small></div>
+                <div style="text-align:right;">
+                    <div>${cart[id]} шт.</div>
+                    <b>${sum.toLocaleString()} ₸</b>
+                </div>
+            </div>`;
+    }
+    document.getElementById('cartTotal').innerText = total.toLocaleString() + " ₸";
+    document.getElementById('cartModal').style.display = 'flex';
+}
+
+function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
+
+function sendWhatsApp() {
+    let text = "Здравствуйте! Мой заказ в SHINMART:\n\n";
+    for(let id in cart) if(cart[id]>0) {
+        let p = db.find(i => i.id == id);
+        text += `• ${p.бренд} ${p.размер} — ${cart[id]} шт.\n`;
+    }
+    window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`);
 }
 </script>
 </body>
