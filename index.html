@@ -9,93 +9,99 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
-        .filter-chip { @apply px-3 py-1 rounded-full border text-xs font-medium transition-all cursor-pointer; }
-        .filter-active { @apply bg-blue-600 border-blue-600 text-white shadow-md; }
+        select { 
+            -webkit-appearance: none; 
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1em;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-gray-100 text-gray-900">
 
-<div x-data="tireCatalog()" x-init="init()" x-cloak class="max-w-4xl mx-auto p-4 pb-20">
-    <header class="text-center py-6">
-        <h1 class="text-3xl font-black text-blue-900 tracking-tight">БАЗА ШИН</h1>
-        <p class="text-gray-500 text-sm mt-1">Автоматическое обновление из Google Таблиц</p>
+<div x-data="tireCatalog()" x-init="init()" x-cloak class="max-w-md mx-auto min-h-screen pb-20">
+    <header class="bg-white p-4 shadow-sm sticky top-0 z-20">
+        <h1 class="text-xl font-black text-center text-blue-800">БАЗА ШИН</h1>
+        
+        <div class="mt-3">
+            <input type="text" x-model="search" placeholder="Поиск по модели..." 
+                   class="w-full p-3 bg-gray-100 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mt-3">
+            <select x-model="filters.season" class="p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none">
+                <option value="Все">Все сезоны</option>
+                <template x-for="s in options.seasons">
+                    <option :value="s" x-text="s"></option>
+                </template>
+            </select>
+
+            <select x-model="filters.spike" class="p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none">
+                <option value="Все">Шипы: Все</option>
+                <option value="Да">Шипованные</option>
+                <option value="Нет">Без шипов</option>
+            </select>
+
+            <select x-model="filters.size" class="p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none">
+                <option value="Все">Все размеры</option>
+                <template x-for="size in options.sizes">
+                    <option :value="size" x-text="size"></option>
+                </template>
+            </select>
+
+            <select x-model="filters.brand" class="p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none">
+                <option value="Все">Все бренды</option>
+                <template x-for="b in options.brands">
+                    <option :value="b" x-text="b"></option>
+                </template>
+            </select>
+        </div>
     </header>
 
-    <div class="space-y-4 mb-6">
-        <input type="text" x-model="search" placeholder="Поиск по названию..." 
-               class="w-full p-4 rounded-2xl border-none shadow-lg focus:ring-2 focus:ring-blue-500 outline-none">
+    <div x-show="loading" class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+    </div>
 
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-            <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Сезон</span>
-                <div class="flex flex-wrap gap-2">
-                    <template x-for="s in ['Все', ...options.seasons]">
-                        <div @click="filters.season = s" :class="filters.season === s ? 'filter-active' : 'bg-gray-50'" class="filter-chip" x-text="s"></div>
-                    </template>
+    <div class="px-3 py-4">
+        <div class="text-[10px] text-gray-400 font-bold uppercase mb-3 px-1" x-text="'Найдено: ' + filteredTires().length"></div>
+        
+        <div class="grid grid-cols-1 gap-3">
+            <template x-for="tire in filteredTires()" :key="tire.id">
+                <div class="bg-white rounded-2xl p-3 shadow-sm flex items-center relative overflow-hidden border border-white active:scale-95 transition-transform">
+                    <div class="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-lg p-1 mr-4">
+                        <img :src="tire.photo || 'https://via.placeholder.com/100?text=Шина'" class="w-full h-full object-contain" alt="tire">
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1 mb-1">
+                            <span class="text-[9px] font-bold text-blue-600 px-1.5 py-0.5 bg-blue-50 rounded" x-text="tire.brand"></span>
+                            <template x-if="tire.spike === 'Да'">
+                                <span class="text-[9px] font-bold text-orange-600 px-1.5 py-0.5 bg-orange-50 rounded">ШИПЫ</span>
+                            </template>
+                        </div>
+                        <h3 class="font-bold text-sm text-gray-900 truncate" x-text="tire.name"></h3>
+                        <div class="text-xs text-gray-500 font-medium" x-text="tire.size"></div>
+                        
+                        <div class="mt-2 flex items-end justify-between">
+                            <div>
+                                <div class="text-lg font-black text-gray-900 leading-none" x-text="tire.price + ' ₸'"></div>
+                                <div class="text-[10px] mt-1" :class="tire.stock.includes('больше') ? 'text-green-600' : 'text-orange-500'" x-text="'Склад: ' + tire.stock"></div>
+                            </div>
+                            <a :href="'https://wa.me/77001234567?text=Интересуют шины: ' + tire.name + ' (' + tire.size + ')'" 
+                               class="bg-green-500 text-white p-2 rounded-xl shadow-md active:bg-green-600">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412 0 6.556-5.338 11.891-11.893 11.891-2.01 0-3.987-.51-5.742-1.47l-6.155 1.679zm6.216-3.758c1.616.959 3.23 1.442 4.848 1.442 5.397 0 9.789-4.392 9.789-9.789s-4.392-9.789-9.789-9.789c-5.399 0-9.791 4.392-9.791 9.791 0 1.769.469 3.5 1.357 5.011l-1.03 3.764 3.828-1.026zm9.462-6.516c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Шипы</span>
-                <div class="flex flex-wrap gap-2">
-                    <template x-for="s in ['Все', ...options.spikes]">
-                        <div @click="filters.spike = s" :class="filters.spike === s ? 'filter-active' : 'bg-gray-50'" class="filter-chip" x-text="s === 'Да' ? 'Шипованные' : (s === 'Нет' ? 'Без шипов' : 'Все')"></div>
-                    </template>
-                </div>
-            </div>
-
-            <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Размер</span>
-                <select x-model="filters.size" class="w-full p-2 bg-gray-50 rounded-lg border-none text-sm outline-none">
-                    <option value="Все">Все размеры</option>
-                    <template x-for="size in options.sizes">
-                        <option :value="size" x-text="size"></option>
-                    </template>
-                </select>
-            </div>
-
-            <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Бренд</span>
-                <div class="flex flex-wrap gap-2">
-                    <template x-for="b in ['Все', ...options.brands]">
-                        <div @click="filters.brand = b" :class="filters.brand === b ? 'filter-active' : 'bg-gray-50'" class="filter-chip" x-text="b"></div>
-                    </template>
-                </div>
-            </div>
+            </template>
         </div>
     </div>
 
-    <div x-show="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <template x-for="tire in filteredTires()" :key="tire.id">
-            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col relative">
-                <template x-if="tire.spike === 'Да'">
-                    <span class="absolute top-2 right-2 bg-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">ШИПЫ</span>
-                </template>
-
-                <div class="flex items-center mb-4">
-                    <img :src="tire.photo || 'https://via.placeholder.com/100?text=No+Photo'" class="w-20 h-20 object-contain mr-4">
-                    <div>
-                        <div class="text-[10px] font-bold text-blue-600 uppercase" x-text="tire.brand"></div>
-                        <h3 class="font-bold text-sm leading-tight" x-text="tire.name"></h3>
-                        <div class="text-xs text-gray-500 mt-1" x-text="tire.size"></div>
-                    </div>
-                </div>
-                
-                <div class="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center">
-                    <div>
-                        <div class="text-lg font-black text-gray-900" x-text="tire.price + ' ₸'"></div>
-                        <div class="text-[10px]" :class="tire.stock.includes('больше') ? 'text-green-600' : 'text-orange-500'" x-text="'Склад: ' + tire.stock"></div>
-                    </div>
-                    <a :href="'https://wa.me/77001234567?text=Интересуют шины: ' + tire.name" class="bg-green-500 text-white p-2 rounded-xl shadow-lg shadow-green-100">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412 0 6.556-5.338 11.891-11.893 11.891-2.01 0-3.987-.51-5.742-1.47l-6.155 1.679zm6.216-3.758c1.616.959 3.23 1.442 4.848 1.442 5.397 0 9.789-4.392 9.789-9.789s-4.392-9.789-9.789-9.789c-5.399 0-9.791 4.392-9.791 9.791 0 1.769.469 3.5 1.357 5.011l-1.03 3.764 3.828-1.026zm9.462-6.516c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-                    </a>
-                </div>
-            </div>
-        </template>
-    </div>
-
-    <div x-show="loading" class="flex justify-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <div x-show="!loading && filteredTires().length === 0" class="text-center py-20 text-gray-500">
+        Ничего не найдено по таким фильтрам
     </div>
 </div>
 
@@ -109,7 +115,7 @@ function tireCatalog() {
         options: { seasons: [], brands: [], sizes: [], spikes: [] },
         csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRllTq080YSSI7EgOmGa0XqlhLPxKpomN26jhacDriuVsYPMdJhLM1blqR5Z5FiBvUOjHrdQujXS67q/pub?output=csv',
 
-        init() {
+        async init() {
             Papa.parse(this.csvUrl, {
                 download: true,
                 header: true,
@@ -125,14 +131,12 @@ function tireCatalog() {
                             stock: row['Остаток'],
                             photo: row['Фото'],
                             type: row['Тип'],
-                            spike: row['Шипы'] // Берем из колонки М
+                            spike: row['Шипы']
                         }));
                     
-                    // Собираем уникальные значения для фильтров автоматически
-                    this.options.seasons = [...new Set(this.tires.map(t => t.type))].sort();
-                    this.options.brands = [...new Set(this.tires.map(t => t.brand))].sort();
-                    this.options.sizes = [...new Set(this.tires.map(t => t.size))].sort();
-                    this.options.spikes = [...new Set(this.tires.map(t => t.spike))].sort();
+                    this.options.seasons = [...new Set(this.tires.map(t => t.type))].filter(x => x).sort();
+                    this.options.brands = [...new Set(this.tires.map(t => t.brand))].filter(x => x).sort();
+                    this.options.sizes = [...new Set(this.tires.map(t => t.size))].filter(x => x).sort();
                     
                     this.loading = false;
                 }
@@ -141,7 +145,8 @@ function tireCatalog() {
 
         filteredTires() {
             return this.tires.filter(t => {
-                const matchSearch = t.name.toLowerCase().includes(this.search.toLowerCase());
+                const s = this.search.toLowerCase();
+                const matchSearch = t.name.toLowerCase().includes(s) || t.brand.toLowerCase().includes(s);
                 const matchSeason = this.filters.season === 'Все' || t.type === this.filters.season;
                 const matchBrand = this.filters.brand === 'Все' || t.brand === this.filters.brand;
                 const matchSize = this.filters.size === 'Все' || t.size === this.filters.size;
@@ -153,6 +158,5 @@ function tireCatalog() {
     }
 }
 </script>
-
 </body>
 </html>
