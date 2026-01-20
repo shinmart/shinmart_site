@@ -186,4 +186,22 @@ function tireCatalog() {
         },
 
         isFiltered() {
-            return this.filters.season !== '
+            return this.filters.season !== 'Все' || this.filters.brand || this.filters.size || this.filters.spike !== 'Все';
+        },
+
+        filteredTires() {
+            let filtered = this.tires.filter(t => {
+                const matchSeason = this.filters.season === 'Все' || t.type === this.filters.season;
+                const matchSpike = this.filters.spike === 'Все' || t.spike === this.filters.spike;
+                const matchBrand = !this.filters.brand || t.brand.toLowerCase().includes(this.filters.brand.toLowerCase());
+                const matchSize = !this.filters.size || t.size.toLowerCase().includes(this.filters.size.toLowerCase());
+                return matchSeason && matchBrand && matchSize && matchSpike;
+            });
+            // Сортировка от дешевых к дорогим
+            return filtered.sort((a, b) => a.price - b.price);
+        }
+    }
+}
+</script>
+</body>
+</html>
