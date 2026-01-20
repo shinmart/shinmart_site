@@ -3,189 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Каталог шин</title>
+<title>Тест каталога</title>
 
-<!-- CSV парсер -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  margin: 0;
-}
-
-header {
-  background: #111;
-  color: #fff;
-  padding: 16px;
-  text-align: center;
-}
-
-.mode button {
-  margin: 5px;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.filters {
-  background: #fff;
-  padding: 12px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 8px;
-}
-
-select, input {
-  padding: 8px;
-  font-size: 14px;
-}
-
-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.catalog {
-  padding: 12px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 12px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 6px;
-  padding: 10px;
-}
-
-.card img {
-  width: 100%;
-  height: 150px;
-  object-fit: contain;
-}
-
-.price {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 6px;
-}
-
-.stock {
-  font-size: 13px;
-  color: #555;
-}
+body { font-family: Arial; padding: 20px }
+.card { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px }
+img { max-width: 200px }
 </style>
 </head>
 <body>
 
-<header>
-  <h2>Каталог шин</h2>
-  <div class="mode">
-    <button onclick="setMode('retail')">Розница</button>
-    <button onclick="setMode('opt')">Опт</button>
-  </div>
-</header>
-
-<div class="filters">
-  <select id="size"><option value="">Размер</option></select>
-  <select id="season"><option value="">Сезон</option></select>
-  <select id="studs"><option value="">Шипы</option></select>
-  <select id="brand"><option value="">Бренд</option></select>
-  <input id="search" placeholder="Поиск по названию">
-  <label>
-    <input type="checkbox" id="inStock"> В наличии
-  </label>
-</div>
-
-<div class="catalog" id="catalog"></div>
+<h2>Тест загрузки Google Таблицы</h2>
+<div id="out">Загрузка...</div>
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRllTq080YSSI7EgOmGa0XqlhLPxKpomN26jhacDriuVsYPMdJhLM1blqR5Z5FiBvUOjHrdQujXS67q/pub?output=csv";
 
-let data = [];
-let mode = "retail";
-
-function setMode(m) {
-  mode = m;
-  render();
-}
-
 Papa.parse(CSV_URL, {
   download: true,
   header: true,
-  skipEmptyLines: true,
-  complete: function (results) {
-    data = results.data.map(r => ({
-      stock: r["Остаток"],
-      opt: r["ЦЕНА АВТОСАЛОН"],
-      retail: r["РОЗНИЦА"],
-      size: r["Размер"],
-      season: r["Тип"],
-      studs: r["Шипы"],
-      name: r["Наименование"],
-      brand: r["Бренд"],
-      photo: r["Фото"]
-    }));
+  complete: function(res) {
+    const out = document.getElementById("out");
+    out.innerHTML = "";
 
-    initFilters();
-    render();
+    res.data.slice(0,5).forEach(r => {
+      out.innerHTML += `
+        <div class="card">
+          <div><b>${r["Наименование"]}</b></div>
+          <div>Цена: ${r["РОЗНИЦА"]}</div>
+          <img src="${r["Фото"]}">
+        </div>
+      `;
+    });
+  },
+  error: function(err) {
+    document.getElementById("out").innerText = "ОШИБКА: " + err;
   }
 });
-
-function initFilters() {
-  fillSelect("size");
-  fillSelect("season");
-  fillSelect("studs");
-  fillSelect("brand");
-
-  search.oninput = render;
-  inStock.onchange = render;
-}
-
-function fillSelect(key) {
-  const select = document.getElementById(key);
-  const values = [...new Set(data.map(d => d[key]).filter(Boolean))].sort();
-  values.forEach(v => {
-    const o = document.createElement("option");
-    o.value = v;
-    o.textContent = v;
-    select.appendChild(o);
-  });
-  select.onchange = render;
-}
-
-function render() {
-  catalog.innerHTML = "";
-
-  data.filter(d => {
-    if (size.value && d.size !== size.value) return false;
-    if (season.value && d.season !== season.value) return false;
-    if (studs.value && d.studs !== studs.value) return false;
-    if (brand.value && d.brand !== brand.value) return false;
-    if (search.value && !d.name.toLowerCase().includes(search.value.toLowerCase())) return false;
-
-    if (inStock.checked) {
-      if (!d.stock) return false;
-      if (d.stock.toString().includes("0")) return false;
-    }
-    return true;
-  })
-  .forEach(d => {
-    catalog.innerHTML += `
-      <div class="card">
-        <img src="${d.photo}">
-        <div><strong>${d.name}</strong></div>
-        <div>Размер: ${d.size}</div>
-        <div>Сезон: ${d.season}</div>
-        <div>Шипы: ${d.studs}</div>
-        <div class="stock">Остаток: ${d.stock || "—"}</div>
-        <div class="price">${mode === "opt" ? d.opt : d.retail} ₸</div>
-      </div>
-    `;
-  });
-}
 </script>
 
 </body>
